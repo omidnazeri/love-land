@@ -36,6 +36,6 @@ allprojects {
         }
     }
     dependencies {
-        testCompile "junit:junit"
+        testImplementation "junit:junit"
     }
 }
