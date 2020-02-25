@@ -2,8 +2,9 @@ package com.love.land.service;
 
 import com.love.land.domain.dto.CategoryDto;
 import com.love.land.domain.dto.ContentDto;
-import com.love.land.domain.entity.Category;
-import com.love.land.domain.entity.Content;
+import com.love.land.domain.dto.FileContentDto;
+import com.love.land.domain.dto.TextContentDto;
+import com.love.land.domain.entity.*;
 import com.love.land.domain.repository.CategoryRepository;
 import com.love.land.domain.repository.ContentRepository;
 import org.apache.logging.log4j.util.Strings;
@@ -27,6 +28,7 @@ public class ContentService {
         this.contentRepository = contentRepository;
     }
 
+    @Transactional
     public CategoryDto addCategory(String parentId, String title) {
         Category parent = null;
 
@@ -51,6 +53,39 @@ public class ContentService {
 
         return categoryRepository.findAllByParent(parent).
                 map(Category::toDto).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public TextContentDto addTextContent(String categoryId, String title, String body) {
+        Category parent = null;
+
+        if (!Strings.isEmpty(categoryId)) {
+            parent = categoryRepository.findById(categoryId).orElseThrow(InvalidParameterException::new);
+        }
+
+        TextContent content = new TextContent();
+        content.setCategory(parent);
+        content.setTitle(title);
+        content.setBody(body);
+
+        return (TextContentDto) contentRepository.save(content).toDto();
+    }
+
+    @Transactional
+    public FileContentDto addFileContent(String categoryId, String title, FileType fileType, String url) {
+        Category parent = null;
+
+        if (!Strings.isEmpty(categoryId)) {
+            parent = categoryRepository.findById(categoryId).orElseThrow(InvalidParameterException::new);
+        }
+
+        FileContent content = new FileContent();
+        content.setCategory(parent);
+        content.setTitle(title);
+        content.setFileType(fileType);
+        content.setUrl(url);
+
+        return (FileContentDto) contentRepository.save(content).toDto();
     }
 
     @Transactional
