@@ -27,6 +27,20 @@ public class ContentService {
         this.contentRepository = contentRepository;
     }
 
+    public CategoryDto addCategory(String parentId, String title) {
+        Category parent = null;
+
+        if (!Strings.isEmpty(parentId)) {
+            parent = categoryRepository.findById(parentId).orElseThrow(InvalidParameterException::new);
+        }
+
+        Category category = new Category();
+        category.setParent(parent);
+        category.setTitle(title);
+
+        return categoryRepository.save(category).toDto();
+    }
+
     @Transactional
     public List<CategoryDto> getCategories(String parentId) {
         Category parent = null;

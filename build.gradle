@@ -16,6 +16,11 @@ allprojects {
                 srcDir 'src/main/java'
             }
         }
+        test {
+            java {
+                srcDir 'src/test/java'
+            }
+        }
     }
 
     group = 'com.love.land'
