@@ -1,24 +1,42 @@
 package com.love.land.conroller;
 
 import com.love.land.domain.dto.ContentDto;
+import com.love.land.service.ContentService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("content")
 public class ContentController {
-    @RequestMapping("info/{id}")
-    public ResponseEntity<ContentDto> info(@PathVariable("id") String id) {
-        return ResponseEntity.notFound().build();
+    private final ContentService contentService;
+
+    public ContentController(ContentService contentService) {
+        this.contentService = contentService;
     }
 
-    @RequestMapping("list/{page}/{size}")
+    @GetMapping("info/{id}")
+    public ResponseEntity<ContentDto> info(@PathVariable("id") String id) {
+        try {
+            return ResponseEntity.ok(contentService.getContent(id));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("list/{page}/{size}")
     public ResponseEntity<List<ContentDto>> list(@PathVariable("page") int page,
-                                                 @PathVariable("size") int size) {
-        return ResponseEntity.notFound().build();
+                                                 @PathVariable("size") int size,
+                                                 @RequestParam("category") String category) {
+        try {
+            return ResponseEntity.ok(contentService.getContents(category, page, size));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
